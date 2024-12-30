@@ -15,14 +15,23 @@ class PostController extends Controller
     /**
      * Display a list of all posts.
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        // Fetch all posts ordered by the most recently updated
-        $posts = Post::orderBy('updated_at', 'desc')->get();
-
-        // Return a view and pass the posts data to it
-        return response()->view('posts.index', compact('posts'));
+        // Get the search query from the request
+        $search = $request->input('search');
+    
+        // Fetch posts with optional search query, ordered by the most recently updated
+        $posts = Post::when($search, function ($query, $search) {
+            return $query->where('title', 'like', "%{$search}%")
+                         ->orWhere('content', 'like', "%{$search}%");
+        })
+        ->orderBy('updated_at', 'desc')
+        ->paginate(5);
+    
+        // Return the view and pass the posts data along with the search term
+        return response()->view('posts.index', compact('posts', 'search'));
     }
+    
 
     /**
      * Show the form to create a new post.

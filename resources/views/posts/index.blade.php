@@ -13,6 +13,21 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <!-- Search Bar -->
+            <div class="mb-6 flex justify-between items-center">
+                <form method="GET" action="{{ route('posts.index') }}" class="w-full sm:w-1/3">
+                    <div class="input-group">
+                        <input type="text" name="search" value="{{ old('search', $search) }}" 
+                               class="form-control" placeholder="Search posts..." 
+                               aria-label="Search posts" aria-describedby="search-button">
+                        <button class="btn btn-primary" type="submit" id="search-button">
+                            <i class="bi bi-search"></i> Search
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Posts Grid -->
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 @forelse ($posts as $post)
                     <div class="bg-white shadow-lg rounded-lg p-6 transition-all duration-300 ease-in-out hover:shadow-xl">
@@ -45,6 +60,11 @@
                         No posts available.
                     </div>
                 @endforelse
+            </div>
+
+            <!-- Pagination Links -->
+            <div class="mt-6">
+                {{ $posts->links() }}
             </div>
         </div>
     </div>
